@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Tran Duy Duc — Computer Science student and aspiring AI & Software Engineer. Building intelligent systems with clarity and craftsmanship.">
+  <title>Tran Duy Duc — AI & Software Engineer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Three.js Hero Background Canvas -->
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+  <!-- ===== GLOBAL NAV ===== -->
+  <nav class="global-nav" role="navigation" aria-label="Main navigation">
+    <div class="global-nav__inner">
+      <a href="#hero" class="global-nav__logo"></a>
+      <div class="global-nav__links">
+        <a href="#hero">Home</a>
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <button class="global-nav__hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="#hero">Home</a>
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <main>
+
+    <!-- ============================================================
+         ACT 1 — HERO: 3D Parallax Depth Intro
+         Scroll drives a dolly-in camera effect.
+         Each element sits at a different Z-depth.
+         ============================================================ -->
+    <section class="hero tile--black" id="hero">
+      <div class="hero__content scene-3d">
+        <img src="avatar.png" alt="Tran Duy Duc" class="hero__avatar panel-3d" data-depth="3" width="240" height="240">
+        <h1 class="hero-display hero__name panel-3d" data-depth="2">Tran Duy Duc</h1>
+        <p class="lead hero__title panel-3d" data-depth="1.5">Computer Science · AI & Software Engineer</p>
+        <p class="lead-airy hero__tagline panel-3d" data-depth="1">
+          Building intelligent systems with clarity, craftsmanship, and real-world impact.
+        </p>
+        <div class="hero__ctas panel-3d" data-depth="0.5">
+          <a href="#projects" class="btn-primary">View Projects</a>
+          <a href="#about" class="btn-secondary-pill btn-secondary-pill--on-dark">About Me</a>
+        </div>
+      </div>
+      <div class="hero__scroll-hint" id="scroll-hint">
+        <span>Scroll</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACT 2 — HIGHLIGHTS: Counter animation on scroll
+         ============================================================ -->
+    <section class="tile tile--parchment" id="highlights">
+      <div class="tile__inner">
+        <div class="highlights">
+          <div class="highlight-item panel-3d">
+            <div class="highlight-item__value"><span data-count="3.82">0</span></div>
+            <p class="caption highlight-item__label">GPA — Most Recent Semester</p>
+          </div>
+          <div class="highlight-item panel-3d">
+            <div class="highlight-item__value"><span data-count="5">0</span></div>
+            <p class="caption highlight-item__label">Personal Projects</p>
+          </div>
+          <div class="highlight-item panel-3d">
+            <div class="highlight-item__value"><span data-count="10" data-suffix="+">0</span></div>
+            <p class="caption highlight-item__label">Technologies & Tools</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACT 3 — ABOUT / JOURNEY: Step-by-step scroll reveal
+         Content reveals as 3D floating panels.
+         ============================================================ -->
+    <section class="tile tile--light" id="about">
+      <div class="tile__inner reading-layout">
+        <span class="section-label panel-3d">About</span>
+        <h2 class="display-lg section-heading panel-3d">Education & Background</h2>
+
+        <div class="content-block journey-step">
+          <h3 class="tagline" style="margin-bottom:var(--spacing-sm)">Ho Chi Minh City Open University</h3>
+          <p class="caption" style="color:var(--color-ink-muted-48);margin-bottom:var(--spacing-md)">Computer Science ·
+            2022 – Present</p>
+          <p>Most Recent Semester GPA: <strong>3.82 / 4.0</strong></p>
+          <p style="margin-top:var(--spacing-md)"><span class="caption-strong">Relevant Coursework:</span><br>
+            <span class="caption" style="color:var(--color-ink-muted-80)">Artificial Intelligence, Computer Vision, Data
+              Mining, Database Systems, Data Structures and Algorithms, Object-Oriented Programming, Web Programming,
+              Discrete Mathematics.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACT 4 — EXPERIENCE: Timeline reveal
+         ============================================================ -->
+    <section class="tile tile--dark" id="experience">
+      <div class="tile__inner reading-layout">
+        <span class="section-label panel-3d">Experience</span>
+        <h2 class="display-lg section-heading panel-3d">Work Experience</h2>
+
+        <div class="experience-item journey-step">
+          <h3 class="tagline experience-item__role">Web Development Intern</h3>
+          <p class="caption experience-item__company" style="color:var(--color-body-muted)">Sao Phuong Nam Consulting,
+            Development and Investment JSC</p>
+          <div class="experience-item__details">
+            <ul>
+              <li>Participated in designing and editing website interfaces using WordPress and Elementor based on client
+                requirements in the F&B and Spa industries.</li>
+              <li>Implemented layouts, content, and UI effects according to design files (Figma/brief), ensuring visual
+                appeal and brand consistency.</li>
+              <li>Optimized user interfaces across multiple devices (mobile, tablet, desktop) with responsive design
+                principles.</li>
+              <li>Collaborated closely with Designers and Backend Developers to deliver complete, high-quality products.
+              </li>
+              <li>Gained exposure to professional workflows and continuously improved deliverables based on feedback.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACT 5 — PROJECTS: 3D Depth Cards (MOST IMPORTANT)
+         Each project slides in from Z-axis depth.
+         GitHub links clearly visible and clickable.
+         ============================================================ -->
+    <section class="tile tile--parchment tile--centered" id="projects">
+      <div class="tile__inner" style="display:flex;flex-direction:column;align-items:center">
+        <span class="section-label panel-3d">Projects</span>
+        <h2 class="display-lg panel-3d" style="margin-bottom:var(--spacing-md)">Selected Work</h2>
+        <p class="lead-airy panel-3d"
+          style="color:var(--color-ink-muted-48);max-width:600px;margin-bottom:var(--spacing-section)">
+          From AI-powered learning tools to real-time computer vision — projects built with purpose.
+        </p>
+      </div>
+    </section>
+
+    <!-- Project 1: MemoHop -->
+    <section class="tile tile--light project-section">
+      <div class="tile__inner">
+        <div class="project-card project-3d">
+          <p class="caption project-card__date">March 2026</p>
+          <h3 class="display-md project-card__name">MemoHop — Smart Flashcard Application</h3>
+          <p class="project-card__objective">An Android-based intelligent vocabulary learning application that
+            integrates AI and the Spaced Repetition algorithm to personalize learning paths, enhance long-term
+            retention, and improve the self-study experience.</p>
+          <div class="project-card__outcomes">
+            <h4 class="body-strong">Key Outcomes</h4>
+            <ul>
+              <li>Built a vocabulary review system based on the SM-2 algorithm combined with an Adaptive Scheduler,
+                automatically adjusting study schedules according to user behavior.</li>
+              <li>Integrated Gemini AI to generate flashcards from text/PDF/DOCX files, including examples, images,
+                quizzes, and an AI Tutor chatbot.</li>
+              <li>Implemented an offline-first architecture with background synchronization following Clean
+                Architecture.</li>
+              <li>Conducted learning data analysis and designed data schemas and SQL queries for reporting.</li>
+            </ul>
+          </div>
+          <div class="project-card__tech">
+            <span class="caption-strong">Tech Stack</span>
+            <div class="project-card__tech-list">
+              <span class="project-card__tech-tag">Android / Kotlin</span>
+              <span class="project-card__tech-tag">Gemini AI</span>
+              <span class="project-card__tech-tag">SM-2 Algorithm</span>
+              <span class="project-card__tech-tag">Clean Architecture</span>
+              <span class="project-card__tech-tag">Python</span>
+              <span class="project-card__tech-tag">SQL</span>
+            </div>
+          </div>
+          <div class="project-card__links">
+            <a href="https://github.com/BesBoo/MemoHop" target="_blank" rel="noopener"
+              class="text-link text-link--no-arrow">View on GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project 2: PMedMamba -->
+    <section class="tile tile--dark project-section">
+      <div class="tile__inner">
+        <div class="project-card project-3d">
+          <p class="caption project-card__date">March 2026</p>
+          <h3 class="display-md project-card__name">PMedMamba — Multi-Segment Medical Image Classification</h3>
+          <p class="project-card__objective">A deep learning model combining multi-segment State Space Models and gated
+            CNNs to analyze and classify Chest X-ray images, accurately identifying pathological features with a
+            high-reliability labeling pipeline.</p>
+          <div class="project-card__outcomes">
+            <h4 class="body-strong">Key Outcomes</h4>
+            <ul>
+              <li>Addressed the complex challenge of medical image classification and labeling, requiring high accuracy
+                and consistency.</li>
+              <li>Achieved effective classification of lung diseases from Chest X-ray images.</li>
+              <li>Supported data quality control and model interpretability through Grad-CAM visualization.</li>
+            </ul>
+          </div>
+          <div class="project-card__tech">
+            <span class="caption-strong" style="color:var(--color-body-muted)">Tech Stack</span>
+            <div class="project-card__tech-list">
+              <span class="project-card__tech-tag">Python</span>
+              <span class="project-card__tech-tag">State Space Models</span>
+              <span class="project-card__tech-tag">CNN</span>
+              <span class="project-card__tech-tag">Grad-CAM</span>
+              <span class="project-card__tech-tag">Medical Imaging</span>
+            </div>
+          </div>
+          <div class="project-card__links">
+            <a href="https://github.com/BesBoo/PMedMamba" target="_blank" rel="noopener"
+              class="text-link text-link--on-dark text-link--no-arrow">View on GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project 3: Pneumonia Classification -->
+    <section class="tile tile--parchment project-section">
+      <div class="tile__inner">
+        <div class="project-card project-3d">
+          <p class="caption project-card__date">October 2025</p>
+          <h3 class="display-md project-card__name">Pneumonia Classification from Chest X-rays</h3>
+          <p class="project-card__objective">A deep learning–based lung disease classification system comparing a
+            custom-built CNN with pre-trained models (DenseNet, ResNet) through fine-tuning to support medical
+            diagnosis.</p>
+          <div class="project-card__outcomes">
+            <h4 class="body-strong">Key Outcomes</h4>
+            <ul>
+              <li>Designed an end-to-end medical image processing pipeline, from preprocessing to model training and
+                evaluation, using TensorFlow/Keras.</li>
+              <li>Evaluated model performance using Accuracy, Precision, Recall, F1-Score, and AUC.</li>
+              <li>Applied Grad-CAM to visualize lesion regions on X-ray images, enhancing model transparency.</li>
+            </ul>
+          </div>
+          <div class="project-card__tech">
+            <span class="caption-strong">Tech Stack</span>
+            <div class="project-card__tech-list">
+              <span class="project-card__tech-tag">Python</span>
+              <span class="project-card__tech-tag">TensorFlow / Keras</span>
+              <span class="project-card__tech-tag">DenseNet</span>
+              <span class="project-card__tech-tag">ResNet</span>
+              <span class="project-card__tech-tag">Grad-CAM</span>
+            </div>
+          </div>
+          <div class="project-card__links">
+            <a href="https://github.com/BesBoo/Pneumonia-Classification-Chest-Xray" target="_blank" rel="noopener"
+              class="text-link text-link--no-arrow">View on GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project 4: Face Attendance -->
+    <section class="tile tile--dark-2 project-section">
+      <div class="tile__inner">
+        <div class="project-card project-3d">
+          <p class="caption project-card__date">June – July 2025</p>
+          <h3 class="display-md project-card__name">Real-Time Face Recognition & Attendance System</h3>
+          <p class="project-card__objective">An automated, real-time face recognition–based attendance system for
+            educational environments, replacing manual roll calls with direct identity management through a GUI.</p>
+          <div class="project-card__outcomes">
+            <h4 class="body-strong">Key Outcomes</h4>
+            <ul>
+              <li>Developed a Python application using PyQt5, OpenCV, face_recognition, and MediaPipe, supporting
+                simultaneous detection and recognition of multiple faces.</li>
+              <li>Enabled on-the-fly user registration via camera input and optimized performance by storing face
+                embeddings.</li>
+              <li>Achieved over 90% accuracy under standard lighting and reduced attendance time by approximately 90%.
+              </li>
+            </ul>
+          </div>
+          <div class="project-card__tech">
+            <span class="caption-strong" style="color:var(--color-body-muted)">Tech Stack</span>
+            <div class="project-card__tech-list">
+              <span class="project-card__tech-tag">Python</span>
+              <span class="project-card__tech-tag">PyQt5</span>
+              <span class="project-card__tech-tag">OpenCV</span>
+              <span class="project-card__tech-tag">face_recognition</span>
+              <span class="project-card__tech-tag">MediaPipe</span>
+            </div>
+          </div>
+          <div class="project-card__links">
+            <a href="https://github.com/BesBoo/Face-Attendance-System" target="_blank" rel="noopener"
+              class="text-link text-link--on-dark text-link--no-arrow">View on GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project 5: Coffee Shop Management -->
+    <section class="tile tile--light project-section">
+      <div class="tile__inner">
+        <div class="project-card project-3d">
+          <p class="caption project-card__date">November 2024</p>
+          <h3 class="display-md project-card__name">Coffee Shop Management System</h3>
+          <p class="project-card__objective">A multifunctional sales management system for a coffee shop model, covering
+            POS operations, inventory management, staff role-based access control, and revenue tracking.</p>
+          <div class="project-card__outcomes">
+            <h4 class="body-strong">Key Outcomes</h4>
+            <ul>
+              <li>Built a desktop application in C# on the .NET Framework using Windows Forms and ADO.NET, delivering
+                full POS functionality.</li>
+              <li>Integrated SQL Server with parameterized queries and database transactions to ensure data security.
+              </li>
+              <li>Provided revenue reporting features to help shop owners monitor performance.</li>
+            </ul>
+          </div>
+          <div class="project-card__tech">
+            <span class="caption-strong">Tech Stack</span>
+            <div class="project-card__tech-list">
+              <span class="project-card__tech-tag">C#</span>
+              <span class="project-card__tech-tag">.NET Framework</span>
+              <span class="project-card__tech-tag">Windows Forms</span>
+              <span class="project-card__tech-tag">ADO.NET</span>
+              <span class="project-card__tech-tag">SQL Server</span>
+            </div>
+          </div>
+          <div class="project-card__links">
+            <a href="https://github.com/BesBoo/Cafe-Management-System" target="_blank" rel="noopener"
+              class="text-link text-link--no-arrow">View on GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACT 6 — SKILLS: Layered depth planes
+         Camera moves forward through skill layers on scroll.
+         ============================================================ -->
+    <section class="tile tile--parchment" id="skills">
+      <div class="tile__inner">
+        <span class="section-label panel-3d">Skills</span>
+        <h2 class="display-lg section-heading panel-3d">Technical Skills</h2>
+
+        <div class="skills-grid">
+          <div class="skill-category panel-3d">
+            <h3 class="tagline skill-category__title">Programming Languages</h3>
+            <p class="skill-category__items">Python, HTML/CSS/JavaScript, C#</p>
+          </div>
+          <div class="skill-category panel-3d">
+            <h3 class="tagline skill-category__title">AI & Machine Learning</h3>
+            <p class="skill-category__items">TensorFlow, Keras, NumPy, pandas, scikit-learn, OpenCV, MediaPipe</p>
+          </div>
+          <div class="skill-category panel-3d">
+            <h3 class="tagline skill-category__title">Data & Databases</h3>
+            <p class="skill-category__items">MySQL, PostgreSQL, SQL Server, File Processing Automation (Excel/CSV),
+              Power BI</p>
+          </div>
+          <div class="skill-category panel-3d">
+            <h3 class="tagline skill-category__title">Software & Web Development</h3>
+            <p class="skill-category__items">Git, GitHub, VS Code, Figma, PyQt5 (GUI), Responsive Design, Clean
+              Architecture</p>
+          </div>
+          <div class="skill-category panel-3d">
+            <h3 class="tagline skill-category__title">Soft Skills</h3>
+            <p class="skill-category__items">Self-learning, Logical Thinking, Problem Solving, Responsibility, Teamwork,
+              Attention to Detail</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ACT 7 — CONTACT: Calm, quiet resolution
+         Animation slows, content fades to a flat plane.
+         ============================================================ -->
+    <section class="tile tile--dark tile--centered" id="contact">
+      <div class="tile__inner" style="display:flex;flex-direction:column;align-items:center">
+        <span class="section-label panel-3d">Contact</span>
+        <h2 class="display-lg panel-3d" style="margin-bottom:var(--spacing-md)">Let's Connect</h2>
+        <p class="lead-airy panel-3d"
+          style="color:var(--color-body-muted);max-width:500px;margin-bottom:var(--spacing-xxl)">
+          Open to opportunities, collaborations, and conversations about AI, software engineering, and building things
+          that matter.
+        </p>
+
+        <div class="contact-list panel-3d">
+          <div class="contact-item">
+            <span class="caption contact-item__label">Email</span>
+            <span class="contact-item__value"><a
+                href="mailto:tranduyduc9679@gmail.com">tranduyduc9679@gmail.com</a></span>
+          </div>
+          <div class="contact-item">
+            <span class="caption contact-item__label">GitHub</span>
+            <span class="contact-item__value"><a href="https://github.com/BesBoo" target="_blank"
+                rel="noopener">github.com/BesBoo</a></span>
+          </div>
+          <div class="contact-item">
+            <span class="caption contact-item__label">Phone</span>
+            <span class="contact-item__value"><a href="tel:+84375599679">0375 599 679</a></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__links">
+        <a href="#hero">Home</a>
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <p class="site-footer__copy">&copy; 2026 Tran Duy Duc. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Libraries: Three.js (lightweight) + GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
