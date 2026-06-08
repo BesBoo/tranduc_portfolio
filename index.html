@@ -50,23 +50,59 @@
   <main>
 
     <!-- ============================================================
-         ACT 1 — HERO: 3D Parallax Depth Intro
-         Scroll drives a dolly-in camera effect.
-         Each element sits at a different Z-depth.
+         ACT 1 — HERO: Cinematic Intro Animation
+         Phase 1 (0–3s): Splash — name centered, purple waves
+         Phase 2 (3–4.5s): Transition — layout morph, nav + card enter
+         Phase 3 (4.5–6s): Typing effect
+         After 6s: Interactive 3D tilt on avatar card
          ============================================================ -->
     <section class="hero tile--black" id="hero">
-      <div class="hero__content scene-3d">
-        <img src="avatar.png" alt="Tran Duy Duc" class="hero__avatar panel-3d" data-depth="3" width="240" height="240">
-        <h1 class="hero-display hero__name panel-3d" data-depth="2">Tran Duy Duc</h1>
-        <p class="lead hero__title panel-3d" data-depth="1.5">Computer Science · AI & Software Engineer</p>
-        <p class="lead-airy hero__tagline panel-3d" data-depth="1">
-          Building intelligent systems with clarity, craftsmanship, and real-world impact.
-        </p>
-        <div class="hero__ctas panel-3d" data-depth="0.5">
-          <a href="#projects" class="btn-primary">View Projects</a>
-          <a href="#about" class="btn-secondary-pill btn-secondary-pill--on-dark">About Me</a>
+      <!-- Purple gradient wave background -->
+      <div class="hero__bg-waves"></div>
+
+      <!-- Phase 1: Intro Splash — fullscreen centered text -->
+      <div class="hero__intro" id="hero-intro">
+        <span class="hero__intro-greeting">Hello, I'm</span>
+        <h1 class="hero__intro-name" id="hero-name-intro">Tran Duy Duc <br>
+          <p>Welcome to my Portfolio Website</p>
+        </h1>
+
+      </div>
+
+      <!-- Phase 2+3: Final hero layout — text left, avatar card right -->
+      <div class="hero__final" id="hero-final">
+        <div class="hero__final-left">
+          <span class="hero__final-greeting" id="hero-greeting-final">Hello, I'm</span>
+          <h1 class="hero__final-name" id="hero-name-final">Tran Duy Duc</h1>
+          <p class="hero__typing" id="hero-typing">
+            <span class="hero__typing-text" id="typing-text"></span>
+            <span class="hero__typing-cursor">|</span>
+          </p>
+          <p class="hero__final-tagline" id="hero-tagline">From studying computer science to crafting real-world
+            applications. Passionate about turning creative ideas into functional code.</p>
+          <div class="hero__final-ctas" id="hero-ctas">
+            <a href="#projects" class="btn-primary">View Projects</a>
+            <a href="#about" class="btn-secondary-pill btn-secondary-pill--on-dark">About Me</a>
+          </div>
+        </div>
+        <div class="hero__avatar-card" id="hero-avatar-card">
+          <img src="avatar.png" alt="Tran Duy Duc" class="hero__avatar-img" width="240" height="240">
+          <div class="hero__avatar-overlay">
+            <div class="hero__avatar-top">
+              <span class="hero__avatar-name">Tran Duy Duc</span>
+              <span class="hero__avatar-role">Aspiring Web Developer</span>
+            </div>
+            <div class="hero__avatar-bottom">
+              <div class="hero__avatar-handle">
+                <span class="hero__avatar-at">@tranduc</span>
+                <span class="hero__avatar-status"><span class="status-dot"></span>Online</span>
+              </div>
+              <a href="#contact" class="hero__avatar-contact">Contact Me</a>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="hero__scroll-hint" id="scroll-hint">
         <span>Scroll</span>
         <div class="scroll-arrow"></div>

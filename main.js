@@ -57,10 +57,10 @@
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
-      positions[i3]     = (Math.random() - 0.5) * 1600; /* X: spread */
+      positions[i3] = (Math.random() - 0.5) * 1600; /* X: spread */
       positions[i3 + 1] = (Math.random() - 0.5) * 1000; /* Y: spread */
       positions[i3 + 2] = (Math.random() - 0.5) * 800;  /* Z: depth */
-      velocities[i3]     = (Math.random() - 0.5) * 0.15;
+      velocities[i3] = (Math.random() - 0.5) * 0.15;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.1;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.05;
     }
@@ -90,7 +90,7 @@
       const pos = geometry.attributes.position.array;
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const i3 = i * 3;
-        pos[i3]     += velocities[i3];
+        pos[i3] += velocities[i3];
         pos[i3 + 1] += velocities[i3 + 1];
         pos[i3 + 2] += velocities[i3 + 2];
 
@@ -123,8 +123,8 @@
     window.addEventListener('resize', onResize);
 
     return {
-      setScrollProgress: function(p) { scrollProgress = p; },
-      destroy: function() {
+      setScrollProgress: function (p) { scrollProgress = p; },
+      destroy: function () {
         cancelAnimationFrame(animationId);
         window.removeEventListener('resize', onResize);
         geometry.dispose();
@@ -135,6 +135,85 @@
   }
 
   const heroScene = initHeroCanvas();
+
+  /* ============================================================
+     HELPER: Typing Animation
+     Types text one character at a time with a callback on complete.
+     ============================================================ */
+  function typeText(element, text, speed, callback) {
+    var i = 0;
+    function tick() {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+        setTimeout(tick, speed);
+      } else if (callback) {
+        callback();
+      }
+    }
+    tick();
+  }
+
+  /* ============================================================
+     HELPER: Avatar Card 3D Tilt
+     Rotates card based on mouse position for a 3D hover effect.
+     Uses perspective in the transform for per-element 3D.
+     ============================================================ */
+  function initAvatarTilt(card) {
+    if (!card || prefersReducedMotion) return;
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var centerX = rect.width / 2;
+      var centerY = rect.height / 2;
+      var rotateX = ((y - centerY) / centerY) * -10;
+      var rotateY = ((x - centerX) / centerX) * 10;
+      card.style.transition = 'transform 0.1s ease-out';
+      card.style.transform =
+        'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+    });
+    card.addEventListener('mouseleave', function () {
+      card.style.transition = 'transform 0.4s ease-out';
+      card.style.transform = 'perspective(800px) rotateX(0) rotateY(0)';
+    });
+  }
+
+  /* ============================================================
+     HELPER: Create scroll-driven hero fade-out animations.
+     Called AFTER the intro timeline completes to avoid conflicts.
+     ============================================================ */
+  function createHeroScrollAnimations() {
+    gsap.fromTo('#hero-final',
+      { opacity: 1, y: 0 },
+      {
+        opacity: 0, y: -60,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.5
+        }
+      }
+    );
+
+    var hintEl = document.getElementById('scroll-hint');
+    if (hintEl) {
+      gsap.fromTo(hintEl,
+        { opacity: 1, y: 0 },
+        {
+          opacity: 0, y: 20,
+          scrollTrigger: {
+            trigger: '#hero',
+            start: '5% top',
+            end: '20% top',
+            scrub: true
+          }
+        }
+      );
+    }
+  }
 
   /* ============================================================
      2. GSAP + SCROLLTRIGGER REGISTRATION
@@ -149,65 +228,152 @@
     });
 
     /* --------------------------------------------------------
-       2a. HERO — Z-depth parallax + dolly-in
-       Each hero element has data-depth attribute.
-       On scroll, elements translate in Z proportional to depth.
+       2a. HERO — Cinematic Intro Timeline
+       Phase 1 (0–1s): Splash entrance — text fades in
+       Phase 2 (3–4.5s): Transition — layout morph, nav + card enter
+       Phase 3 (4.5–6s): Typing effect with blinking cursor
+       After 6s: Interactive 3D tilt on avatar card
        -------------------------------------------------------- */
     if (!prefersReducedMotion) {
-      const heroPanels = document.querySelectorAll('.hero .panel-3d');
+      const heroIntro = document.getElementById('hero-intro');
+      const introGreeting = document.querySelector('.hero__intro-greeting');
+      const introName = document.getElementById('hero-name-intro');
+      const heroFinal = document.getElementById('hero-final');
+      const heroNameFinal = document.getElementById('hero-name-final');
+      const globalNav = document.querySelector('.global-nav');
+      const avatarCard = document.getElementById('hero-avatar-card');
+      const heroCtas = document.getElementById('hero-ctas');
+      const heroTyping = document.getElementById('hero-typing');
+      const typingTextEl = document.getElementById('typing-text');
       const scrollHint = document.getElementById('scroll-hint');
+      const heroGreetingFinal = document.getElementById('hero-greeting-final');
+      const heroTagline = document.getElementById('hero-tagline');
 
-      /* Entrance is handled by CSS @keyframes (heroFadeIn in styles.css).
-         Scroll parallax uses gsap.fromTo with explicit values and
-         immediateRender:false so GSAP won't set inline styles until
-         the first scroll event. This prevents conflicts between
-         the CSS entrance animation and GSAP's scroll-driven tween.
-         When scrolling back to top (progress=0), fromTo restores
-         opacity:1, y:0 — hero content reappears correctly. */
-      heroPanels.forEach(panel => {
-        const depth = parseFloat(panel.dataset.depth) || 1;
-        gsap.fromTo(panel,
-          { y: 0, opacity: 1 },
-          {
-            y: -depth * 60,
-            opacity: 0,
-            ease: 'none',
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: '#hero',
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 0.5
-            }
-          }
-        );
-      });
+      /* Skip intro if page is already scrolled (e.g., reload mid-page) */
+      if (window.scrollY > 100) {
+        gsap.set(heroIntro, { display: 'none' });
+        gsap.set(heroFinal, { opacity: 1, visibility: 'visible' });
+        gsap.set(globalNav, { opacity: 1, y: 0 });
+        gsap.set(heroCtas, { opacity: 1, y: 0 });
+        gsap.set(heroTyping, { opacity: 1 });
+        if (typingTextEl) typingTextEl.textContent = 'Aspiring Web Developer';
+        if (scrollHint) gsap.set(scrollHint, { opacity: 1 });
+        if (heroGreetingFinal) gsap.set(heroGreetingFinal, { opacity: 1 });
+        if (heroTagline) gsap.set(heroTagline, { opacity: 1, y: 0 });
+        initAvatarTilt(avatarCard);
+        createHeroScrollAnimations();
+      } else {
+        /* Set initial hidden states */
+        gsap.set(heroFinal, { opacity: 0, visibility: 'hidden' });
+        gsap.set(heroCtas, { opacity: 0, y: 20 });
+        gsap.set(heroTyping, { opacity: 0 });
+        if (scrollHint) gsap.set(scrollHint, { opacity: 0 });
+        if (heroGreetingFinal) gsap.set(heroGreetingFinal, { opacity: 0, y: 10 });
+        if (heroTagline) gsap.set(heroTagline, { opacity: 0, y: 10 });
 
-      /* Scroll hint fades out quickly */
-      if (scrollHint) {
-        gsap.fromTo(scrollHint,
-          { opacity: 1, y: 0 },
-          {
-            opacity: 0, y: 20,
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: '#hero',
-              start: '5% top',
-              end: '20% top',
-              scrub: true
-            }
-          }
-        );
+        /* ---- Master Timeline ---- */
+        const heroTL = gsap.timeline();
+
+        heroTL
+          /* Phase 1: Splash entrance (0s–1s) */
+          .from(introGreeting, {
+            opacity: 0, y: 30,
+            duration: 0.8, ease: 'power2.out'
+          }, 0.3)
+          .from(introName, {
+            opacity: 0, y: 30, scale: 0.95,
+            duration: 0.9, ease: 'power2.out'
+          }, 0.7)
+
+          /* Phase 2: Hero Transition (at t=3s) */
+          .addLabel('transition', 3)
+
+          /* "Hello, I'm" fades out + slides up */
+          .to(introGreeting, {
+            opacity: 0, y: -30,
+            duration: 0.5, ease: 'power2.inOut'
+          }, 'transition')
+
+          /* Name scales down + fades */
+          .to(introName, {
+            opacity: 0, scale: 0.7, y: -20,
+            duration: 0.6, ease: 'power2.inOut'
+          }, 'transition+=0.15')
+
+          /* Switch containers */
+          .set(heroIntro, { display: 'none' }, 'transition+=0.7')
+          .set(heroFinal, { visibility: 'visible' }, 'transition+=0.7')
+          .to(heroFinal, {
+            opacity: 1, duration: 0.01
+          }, 'transition+=0.7')
+
+          /* Greeting fades in */
+          .from(heroGreetingFinal, {
+            opacity: 0, y: 10,
+            duration: 0.4, ease: 'power2.out'
+          }, 'transition+=0.7')
+
+          /* Final name enters from left */
+          .from(heroNameFinal, {
+            opacity: 0, x: -20,
+            duration: 0.6, ease: 'power2.out'
+          }, 'transition+=0.75')
+
+          /* Navbar slides in from top */
+          .to(globalNav, {
+            y: 0, opacity: 1,
+            duration: 1, ease: 'power2.out'
+          }, 'transition+=1.5')
+
+          /* Avatar card enters from right with scale */
+          .fromTo(avatarCard, {
+            opacity: 0, scale: 0.9, x: 80
+          }, {
+            opacity: 1, scale: 1, x: 0,
+            duration: 0.7, ease: 'power2.out'
+          }, 'transition+=0.9')
+
+          /* CTAs fade in */
+          .to(heroCtas, {
+            opacity: 1, y: 0,
+            duration: 0.4, ease: 'power2.out'
+          }, 'transition+=1.1')
+
+          /* Tagline fades in */
+          .to(heroTagline, {
+            opacity: 1, y: 0,
+            duration: 0.5, ease: 'power2.out'
+          }, 'transition+=1.2')
+
+          /* Phase 3: Typing effect (at ~t=4.5s) */
+          .set(heroTyping, { opacity: 1 }, 'transition+=1.3')
+          .add(function () {
+            typeText(typingTextEl, 'Aspiring Web Developer', 70, function () {
+              /* Activate 3D tilt after typing completes */
+              initAvatarTilt(avatarCard);
+            });
+          }, 'transition+=1.3')
+
+          /* Show scroll hint after typing (~t=6s) */
+          .to(scrollHint, {
+            opacity: 1,
+            duration: 0.5, ease: 'power2.out'
+          }, 'transition+=3')
+
+          /* Create scroll animations after intro finishes */
+          .add(function () {
+            createHeroScrollAnimations();
+          }, 'transition+=3.5');
       }
 
-      /* Drive Three.js camera with scroll */
+      /* Drive Three.js camera with scroll (always active) */
       if (heroScene) {
         ScrollTrigger.create({
           trigger: '#hero',
           start: 'top top',
           end: 'bottom top',
           scrub: 0.3,
-          onUpdate: self => {
+          onUpdate: function (self) {
             heroScene.setScrollProgress(self.progress);
           }
         });
@@ -248,7 +414,7 @@
             val: end,
             duration: 1.2,
             ease: 'power2.out',
-            onUpdate: function() {
+            onUpdate: function () {
               const current = this.targets()[0].val;
               el.textContent = isFloat
                 ? current.toFixed(2) + suffix
@@ -556,7 +722,7 @@
      7. SMOOTH SCROLL FOR ANCHOR LINKS
      ============================================================ */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
       const target = document.querySelector(targetId);
       if (target) {
