@@ -524,6 +524,19 @@ ol {
   color: var(--color-on-dark)
 }
 
+.hero__intro-welcome {
+  font-family: var(--font-text);
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  /* bắt đầu ẩn — GSAP sẽ fade in */
+  margin-top: 8px;
+  font-style: italic;
+}
+
 /* Phase 2+3: Final layout â€” text left, avatar card right */
 .hero__final {
   position: relative;
@@ -1645,5 +1658,170 @@ ol {
 
   .about-card__body {
     font-size: 15px
+  }
+}
+
+
+/* ============================================================
+   TOOLS & STACK — Skills Section
+   Thêm vào CUỐI styles.css (sau media queries)
+   ============================================================ */
+
+/* ── Section wrapper ── */
+.ts-section {
+  width: 100%;
+  padding: var(--spacing-section) var(--spacing-lg);
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  color: var(--color-on-dark);
+}
+
+/* ── Header ── */
+.ts-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+/* Title — large uppercase, matches trang web's bold hero feel */
+.ts-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 9vw, 92px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--color-on-dark);
+  display: flex;
+  align-items: baseline;
+  gap: 0.2em;
+  /* Hidden by default — GSAP bubble animation */
+  opacity: 0;
+}
+
+.ts-word,
+.ts-amp {
+  display: inline-block;
+  transform-origin: center bottom;
+}
+
+/* Thin divider dưới title — GSAP animate width */
+.ts-divider {
+  width: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  margin-top: 18px;
+  border-radius: 2px;
+}
+
+/* ── Grid — 3 cột, consistent spacing ── */
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+/* ── Card ── */
+.ts-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 16px 18px;
+  cursor: default;
+  /* start state — GSAP animates to final */
+  opacity: 0;
+  transform: translateY(28px);
+  will-change: transform, opacity;
+  /* hover transition */
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.2s ease;
+}
+
+.ts-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px) !important;
+  /* override GSAP inline after animation done */
+}
+
+/* ── Icon ── */
+.ts-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  /* semi-transparent tinted background using CSS var --ic (set inline) */
+  background: color-mix(in srgb, var(--ic) 14%, transparent);
+  color: var(--ic);
+  padding: 6px;
+}
+
+.ts-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* ── Text ── */
+.ts-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ts-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.15px;
+  color: var(--color-on-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-desc {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Responsive ── */
+@media (max-width: 840px) {
+  .ts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .ts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ts-title {
+    font-size: clamp(36px, 11vw, 56px);
+    letter-spacing: -1px;
+  }
+
+  .ts-card {
+    padding: 13px 15px;
   }
 }

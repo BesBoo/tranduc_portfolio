@@ -1,24 +1,6 @@
 /* ============================================================
    main.js — Scroll Storytelling Engine
    Three.js (hero background) + GSAP ScrollTrigger (all sections)
-   
-   ARCHITECTURE:
-   1. Three.js — Minimal particle field behind hero
-   2. GSAP Hero — Z-depth parallax, dolly-in on scroll
-   3. GSAP Highlights — Counter animation + stagger reveal
-   4. GSAP About — Step-by-step content reveal
-   5. GSAP Experience — Timeline reveal
-   6. GSAP Projects — 3D depth card entrance from Z-axis
-   7. GSAP Skills — Layered plane reveal
-   8. GSAP Contact — Calm fade-in resolution
-   9. Navigation — Mobile menu, active state, scroll progress
-   
-   CONSTANTS:
-   - Camera perspective: 1200px (CSS --perspective)
-   - Hero scroll range: 0 to 100vh
-   - Project Z-offset: 200px (cards enter from behind)
-   - Easing: power2.out (smooth, not flashy)
-   - All scroll ranges use "top bottom" / "bottom top" triggers
    ============================================================ */
 
 (function () {
@@ -28,9 +10,22 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ============================================================
+     SCROLL LOCK — Block scroll during intro animation
+     Uses both overflow:hidden and wheel/touch event blocking
+     for maximum compatibility across browsers/devices.
+     ============================================================ */
+  function lockScroll() {
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+  }
+
+  function unlockScroll() {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
+
+  /* ============================================================
      1. THREE.JS — PARTICLE FIELD HERO BACKGROUND
-     Lightweight: ~150 particles, no physics, no shaders.
-     Fades out as user scrolls past the hero.
      ============================================================ */
   function initHeroCanvas() {
     const canvas = document.getElementById('hero-canvas');
@@ -38,37 +33,35 @@
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.z = 800; /* Camera distance constant */
+    camera.position.z = 800;
 
     const renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       alpha: true,
-      antialias: false, /* Performance: skip AA */
+      antialias: false,
       powerPreference: 'low-power'
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); /* Cap for performance */
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
-    /* Create particle geometry */
     const PARTICLE_COUNT = 120;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(PARTICLE_COUNT * 3);
-    const velocities = new Float32Array(PARTICLE_COUNT * 3); /* Stored separately */
+    const velocities = new Float32Array(PARTICLE_COUNT * 3);
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 1600; /* X: spread */
-      positions[i3 + 1] = (Math.random() - 0.5) * 1000; /* Y: spread */
-      positions[i3 + 2] = (Math.random() - 0.5) * 800;  /* Z: depth */
+      positions[i3] = (Math.random() - 0.5) * 1600;
+      positions[i3 + 1] = (Math.random() - 0.5) * 1000;
+      positions[i3 + 2] = (Math.random() - 0.5) * 800;
       velocities[i3] = (Math.random() - 0.5) * 0.15;
       velocities[i3 + 1] = (Math.random() - 0.5) * 0.1;
       velocities[i3 + 2] = (Math.random() - 0.5) * 0.05;
     }
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-    /* Material: tiny blue dots matching primary color */
     const material = new THREE.PointsMaterial({
-      color: 0x2997ff, /* primary-on-dark */
+      color: 0x2997ff,
       size: 2.5,
       transparent: true,
       opacity: 0.4,
@@ -78,15 +71,12 @@
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
 
-    /* Scroll-driven camera Z movement */
     let scrollProgress = 0;
 
-    /* Render loop */
     let animationId;
     function animate() {
       animationId = requestAnimationFrame(animate);
 
-      /* Gentle particle drift */
       const pos = geometry.attributes.position.array;
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const i3 = i * 3;
@@ -94,7 +84,6 @@
         pos[i3 + 1] += velocities[i3 + 1];
         pos[i3 + 2] += velocities[i3 + 2];
 
-        /* Wrap around boundaries */
         if (pos[i3] > 800) pos[i3] = -800;
         if (pos[i3] < -800) pos[i3] = 800;
         if (pos[i3 + 1] > 500) pos[i3 + 1] = -500;
@@ -102,11 +91,8 @@
       }
       geometry.attributes.position.needsUpdate = true;
 
-      /* Dolly camera forward on scroll (0 → 200px into scene) */
       camera.position.z = 800 - scrollProgress * 200;
       material.opacity = 0.4 * (1 - scrollProgress);
-
-      /* Fade out canvas as user scrolls past hero */
       canvas.style.opacity = 1 - scrollProgress;
 
       renderer.render(scene, camera);
@@ -114,7 +100,6 @@
 
     animate();
 
-    /* Resize handler */
     function onResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -138,7 +123,6 @@
 
   /* ============================================================
      HELPER: Typing Animation
-     Types text one character at a time with a callback on complete.
      ============================================================ */
   function typeText(element, text, speed, callback) {
     var i = 0;
@@ -155,9 +139,56 @@
   }
 
   /* ============================================================
+     HELPER: Play / Replay Typing
+     Resets text rồi gõ lại từ đầu.
+     typingActive — tránh chạy đè nhau nếu trigger liên tục.
+     ============================================================ */
+  var typingActive = false;   /* đang gõ thì không trigger thêm */
+  var introComplete = false;   /* chỉ replay SAU khi intro xong   */
+
+  function playTypingAnimation() {
+    var el = document.getElementById('typing-text');
+    if (!el || typingActive) return;
+    typingActive = true;
+    el.textContent = '';         /* reset về trống */
+    typeText(el, 'Aspiring Web Developer', 40, function () {
+      typingActive = false;
+    });
+  }
+
+  /* ============================================================
+     HELPER: Setup IntersectionObserver để replay typing
+     khi hero section quay lại viewport (scroll về top hoặc
+     click Home trên navbar).
+     ============================================================ */
+  function setupHeroReplayObserver() {
+    var heroSection = document.getElementById('hero');
+    if (!heroSection || !('IntersectionObserver' in window)) return;
+
+    var wasHidden = false;  /* true khi hero đã ra khỏi màn hình ít nhất 1 lần */
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!introComplete) return; /* intro chưa xong → bỏ qua */
+
+        if (!entry.isIntersecting) {
+          /* Hero ra khỏi viewport → đánh dấu */
+          wasHidden = true;
+        } else if (wasHidden) {
+          /* Hero quay lại viewport → replay typing */
+          wasHidden = false;
+          playTypingAnimation();
+        }
+      });
+    }, {
+      threshold: 0.3   /* hero phải hiện ít nhất 30% mới coi là "quay lại" */
+    });
+
+    observer.observe(heroSection);
+  }
+
+  /* ============================================================
      HELPER: Avatar Card 3D Tilt
-     Rotates card based on mouse position for a 3D hover effect.
-     Uses perspective in the transform for per-element 3D.
      ============================================================ */
   function initAvatarTilt(card) {
     if (!card || prefersReducedMotion) return;
@@ -180,8 +211,8 @@
   }
 
   /* ============================================================
-     HELPER: Create scroll-driven hero fade-out animations.
-     Called AFTER the intro timeline completes to avoid conflicts.
+     HELPER: Hero scroll-driven fade-out animations
+     Called AFTER intro timeline completes.
      ============================================================ */
   function createHeroScrollAnimations() {
     gsap.fromTo('#hero-final',
@@ -216,12 +247,11 @@
   }
 
   /* ============================================================
-     2. GSAP + SCROLLTRIGGER REGISTRATION
+     2. GSAP + SCROLLTRIGGER
      ============================================================ */
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 
-    /* Global GSAP defaults: consistent easing */
     gsap.defaults({
       ease: 'power2.out',
       duration: 1
@@ -229,15 +259,12 @@
 
     /* --------------------------------------------------------
        2a. HERO — Cinematic Intro Timeline
-       Phase 1 (0–1s): Splash entrance — text fades in
-       Phase 2 (3–4.5s): Transition — layout morph, nav + card enter
-       Phase 3 (4.5–6s): Typing effect with blinking cursor
-       After 6s: Interactive 3D tilt on avatar card
        -------------------------------------------------------- */
     if (!prefersReducedMotion) {
       const heroIntro = document.getElementById('hero-intro');
       const introGreeting = document.querySelector('.hero__intro-greeting');
       const introName = document.getElementById('hero-name-intro');
+      const introWelcome = document.getElementById('hero-intro-welcome');
       const heroFinal = document.getElementById('hero-final');
       const heroNameFinal = document.getElementById('hero-name-final');
       const globalNav = document.querySelector('.global-nav');
@@ -249,8 +276,9 @@
       const heroGreetingFinal = document.getElementById('hero-greeting-final');
       const heroTagline = document.getElementById('hero-tagline');
 
-      /* Skip intro if page is already scrolled (e.g., reload mid-page) */
+      /* --- Case 1: Page reloaded while already scrolled --- */
       if (window.scrollY > 100) {
+        /* No animation needed, scroll already unlocked */
         gsap.set(heroIntro, { display: 'none' });
         gsap.set(heroFinal, { opacity: 1, visibility: 'visible' });
         gsap.set(globalNav, { opacity: 1, y: 0 });
@@ -262,8 +290,13 @@
         if (heroTagline) gsap.set(heroTagline, { opacity: 1, y: 0 });
         initAvatarTilt(avatarCard);
         createHeroScrollAnimations();
+        introComplete = true;
+        setupHeroReplayObserver();
+
       } else {
-        /* Set initial hidden states */
+        /* --- Case 2: Fresh page load at top — lock scroll during animation --- */
+        lockScroll();
+
         gsap.set(heroFinal, { opacity: 0, visibility: 'hidden' });
         gsap.set(heroCtas, { opacity: 0, y: 20 });
         gsap.set(heroTyping, { opacity: 0 });
@@ -271,11 +304,10 @@
         if (heroGreetingFinal) gsap.set(heroGreetingFinal, { opacity: 0, y: 10 });
         if (heroTagline) gsap.set(heroTagline, { opacity: 0, y: 10 });
 
-        /* ---- Master Timeline ---- */
         const heroTL = gsap.timeline();
 
         heroTL
-          /* Phase 1: Splash entrance (0s–1s) */
+          /* Phase 1: Splash entrance (0s – 1s) */
           .from(introGreeting, {
             opacity: 0, y: 30,
             duration: 0.8, ease: 'power2.out'
@@ -284,48 +316,49 @@
             opacity: 0, y: 30, scale: 0.95,
             duration: 0.9, ease: 'power2.out'
           }, 0.7)
+          /* Dòng welcome fade in sau tên */
+          .to(introWelcome, {
+            opacity: 1, y: 0,
+            duration: 0.7, ease: 'power2.out'
+          }, 1.4)
 
-          /* Phase 2: Hero Transition (at t=3s) */
+          /* Phase 2: Transition (t = 3s) */
           .addLabel('transition', 3)
 
-          /* "Hello, I'm" fades out + slides up */
           .to(introGreeting, {
             opacity: 0, y: -30,
             duration: 0.5, ease: 'power2.inOut'
           }, 'transition')
+          /* Welcome fade out cùng lúc với greeting */
+          .to(introWelcome, {
+            opacity: 0, y: -20,
+            duration: 0.4, ease: 'power2.inOut'
+          }, 'transition')
 
-          /* Name scales down + fades */
           .to(introName, {
             opacity: 0, scale: 0.7, y: -20,
             duration: 0.6, ease: 'power2.inOut'
           }, 'transition+=0.15')
 
-          /* Switch containers */
           .set(heroIntro, { display: 'none' }, 'transition+=0.7')
           .set(heroFinal, { visibility: 'visible' }, 'transition+=0.7')
-          .to(heroFinal, {
-            opacity: 1, duration: 0.01
-          }, 'transition+=0.7')
+          .to(heroFinal, { opacity: 1, duration: 0.01 }, 'transition+=0.7')
 
-          /* Greeting fades in */
           .from(heroGreetingFinal, {
             opacity: 0, y: 10,
             duration: 0.4, ease: 'power2.out'
           }, 'transition+=0.7')
 
-          /* Final name enters from left */
           .from(heroNameFinal, {
             opacity: 0, x: -20,
             duration: 0.6, ease: 'power2.out'
           }, 'transition+=0.75')
 
-          /* Navbar slides in from top */
           .to(globalNav, {
             y: 0, opacity: 1,
             duration: 1, ease: 'power2.out'
           }, 'transition+=1.5')
 
-          /* Avatar card enters from right with scale */
           .fromTo(avatarCard, {
             opacity: 0, scale: 0.9, x: 80
           }, {
@@ -333,40 +366,39 @@
             duration: 0.7, ease: 'power2.out'
           }, 'transition+=0.9')
 
-          /* CTAs fade in */
           .to(heroCtas, {
             opacity: 1, y: 0,
             duration: 0.4, ease: 'power2.out'
           }, 'transition+=1.1')
 
-          /* Tagline fades in */
           .to(heroTagline, {
             opacity: 1, y: 0,
             duration: 0.5, ease: 'power2.out'
           }, 'transition+=1.2')
 
-          /* Phase 3: Typing effect (at ~t=4.5s) */
+          /* Phase 3: Typing effect (t ≈ 4.5s) */
           .set(heroTyping, { opacity: 1 }, 'transition+=1.3')
           .add(function () {
-            typeText(typingTextEl, 'Aspiring Web Developer', 70, function () {
-              /* Activate 3D tilt after typing completes */
+            typeText(typingTextEl, 'Aspiring Web Developer', 40, function () {
               initAvatarTilt(avatarCard);
             });
           }, 'transition+=1.3')
 
-          /* Show scroll hint after typing (~t=6s) */
           .to(scrollHint, {
             opacity: 1,
             duration: 0.5, ease: 'power2.out'
           }, 'transition+=3')
 
-          /* Create scroll animations after intro finishes */
+          /* ✅ Unlock scroll + register scroll animations AFTER intro is fully done */
           .add(function () {
+            unlockScroll();
             createHeroScrollAnimations();
+            introComplete = true;        /* ← đánh dấu intro xong */
+            setupHeroReplayObserver();   /* ← bắt đầu lắng nghe quay về hero */
           }, 'transition+=3.5');
       }
 
-      /* Drive Three.js camera with scroll (always active) */
+      /* Drive Three.js camera with scroll */
       if (heroScene) {
         ScrollTrigger.create({
           trigger: '#hero',
@@ -398,7 +430,6 @@
       });
     });
 
-    /* Counter animation for data-count elements */
     document.querySelectorAll('[data-count]').forEach(el => {
       const target = el.getAttribute('data-count');
       const suffix = el.getAttribute('data-suffix') || '';
@@ -427,58 +458,43 @@
 
     /* --------------------------------------------------------
        2c. ABOUT — Pinned stacked cards animation
-       Section pins when it reaches viewport top.
-       Cards 2–4 slide up from below and stack on card 1.
-       Page stays pinned until all cards have stacked.
-       Scroll up → cards reverse, un-stack one by one.
        -------------------------------------------------------- */
     (function initAboutStackAnimation() {
       var aboutSection = document.querySelector('.about-stack');
       var cards = gsap.utils.toArray('.about-card');
       if (!aboutSection || cards.length < 2) return;
 
-      /* Cards 2–4 start hidden below card 1 */
-      gsap.set(cards.slice(1), {
-        yPercent: 110,
-        opacity: 0
-      });
+      gsap.set(cards.slice(1), { yPercent: 110, opacity: 0 });
 
-      /* Total number of card transitions */
-      var numTransitions = cards.length - 1; /* 3 transitions for 4 cards */
+      var numTransitions = cards.length - 1;
 
-      /* Build a timeline that stacks cards one by one */
       var stackTL = gsap.timeline({
         scrollTrigger: {
           trigger: aboutSection,
           start: 'top top',
-          /* Shorter pin distance — less scroll per card */
           end: '+=' + (numTransitions * window.innerHeight * 0.35),
           pin: true,
-          scrub: 1.2,             /* Higher = smoother, more lag for buttery feel */
+          scrub: 1.2,
           anticipatePin: 1,
           pinSpacing: true,
-          /* Snap to card boundaries: 1 scroll = 1 card */
           snap: {
-            snapTo: 1 / numTransitions,  /* Snap at 0, 0.33, 0.67, 1 */
-            duration: { min: 0.4, max: 0.8 }, /* Snap animation duration */
+            snapTo: 1 / numTransitions,
+            duration: { min: 0.4, max: 0.8 },
             ease: 'power3.inOut'
           }
         }
       });
 
-      /* Animate each card sliding up with longer duration + smooth easing */
       cards.forEach(function (card, i) {
         if (i === 0) return;
-
         stackTL.to(card, {
           yPercent: 0,
           opacity: 1,
           duration: 1,
-          ease: 'power3.inOut'   /* Smoother ease curve */
+          ease: 'power3.inOut'
         });
       });
 
-      /* Header entrance (happens once when section first scrolls into view) */
       gsap.from('.about-stack__header', {
         opacity: 0,
         y: 40,
@@ -520,7 +536,6 @@
         }
       });
 
-      /* Stagger list items */
       const items = step.querySelectorAll('li');
       items.forEach((li, i) => {
         gsap.from(li, {
@@ -538,15 +553,11 @@
     });
 
     /* --------------------------------------------------------
-       2e. PROJECTS — 3D DEPTH CARDS (MOST IMPORTANT)
-       Each project card enters from Z-axis depth.
-       Cards translate from behind (Z: -200px) to Z: 0.
-       Alternating slide direction for visual rhythm.
+       2e. PROJECTS — 3D Depth Cards
        -------------------------------------------------------- */
-    const PROJECT_Z_OFFSET = 200; /* Depth offset in px */
+    const PROJECT_Z_OFFSET = 200;
     const projectSections = document.querySelectorAll('.project-section');
 
-    /* Projects header */
     document.querySelectorAll('#projects .panel-3d').forEach((el, i) => {
       gsap.from(el, {
         opacity: 0,
@@ -561,30 +572,28 @@
       });
     });
 
-    /* Each project card: slide from depth */
     projectSections.forEach((section, index) => {
       const card = section.querySelector('.project-3d');
       if (!card) return;
 
       const isEven = index % 2 === 0;
-      const xOffset = isEven ? -80 : 80; /* Alternate left/right */
+      const xOffset = isEven ? -80 : 80;
 
       gsap.from(card, {
         opacity: 0,
         y: 80,
         x: prefersReducedMotion ? 0 : xOffset,
-        rotateY: prefersReducedMotion ? 0 : (isEven ? -3 : 3), /* Subtle 3D turn */
+        rotateY: prefersReducedMotion ? 0 : (isEven ? -3 : 3),
         rotateX: prefersReducedMotion ? 0 : 2,
         duration: 1,
         scrollTrigger: {
           trigger: section,
           start: 'top 80%',
           end: 'top 30%',
-          scrub: 0.8 /* Tied to scroll for cinematic feel */
+          scrub: 0.8
         }
       });
 
-      /* Stagger list items within each project */
       const listItems = card.querySelectorAll('.project-card__outcomes li');
       listItems.forEach((li, i) => {
         gsap.from(li, {
@@ -600,7 +609,6 @@
         });
       });
 
-      /* Tech tags stagger */
       const tags = card.querySelectorAll('.project-card__tech-tag');
       tags.forEach((tag, i) => {
         gsap.from(tag, {
@@ -616,7 +624,6 @@
         });
       });
 
-      /* GitHub link entrance */
       const link = card.querySelector('.project-card__links');
       if (link) {
         gsap.from(link, {
@@ -633,34 +640,72 @@
     });
 
     /* --------------------------------------------------------
-       2f. SKILLS — Layered plane depth reveal
-       Each skill category enters from a different Z-depth,
-       creating a camera-moving-through-layers effect.
+       2f. SKILLS — Tools & Stack: Bubble title + stagger cards
        -------------------------------------------------------- */
-    document.querySelectorAll('#skills .panel-3d').forEach((el, i) => {
-      gsap.from(el, {
-        opacity: 0,
-        y: 40 + i * 10, /* Deeper elements have more vertical offset */
-        duration: 0.7,
-        delay: i * 0.08,
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          toggleActions: 'play none none none'
+    (function initSkillsAnimation() {
+      var skillsSection = document.querySelector('#skills');
+      if (!skillsSection) return;
+
+      /* 1. BUBBLE animation cho title — từng từ spring bounce */
+      var titleWords = skillsSection.querySelectorAll('.ts-word, .ts-amp');
+      var tsTitle = skillsSection.querySelector('.ts-title');
+      var tsDivider = skillsSection.querySelector('.ts-divider');
+
+      if (tsTitle && titleWords.length) {
+        gsap.set(tsTitle, { opacity: 1 });
+        gsap.set(titleWords, { scale: 0, opacity: 0, transformOrigin: 'center bottom' });
+
+        var bubbleTL = gsap.timeline({
+          scrollTrigger: {
+            trigger: skillsSection,
+            start: 'top 78%',
+            toggleActions: 'play none none none'
+          }
+        });
+
+        bubbleTL.to(titleWords, {
+          scale: 1,
+          opacity: 1,
+          duration: 0.7,
+          ease: 'back.out(2.2)',   /* spring bounce = "bubble" effect */
+          stagger: 0.12
+        });
+
+        if (tsDivider) {
+          bubbleTL.to(tsDivider, {
+            width: 60,
+            duration: 0.5,
+            ease: 'power2.out'
+          }, '-=0.2');
         }
-      });
-    });
+      }
+
+      /* 2. STAGGER fade-up từng card */
+      var cards = skillsSection.querySelectorAll('[data-ts-card]');
+      if (cards.length) {
+        gsap.to(cards, {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+          stagger: { each: 0.07, from: 'start' },
+          scrollTrigger: {
+            trigger: skillsSection,
+            start: 'top 72%',
+            toggleActions: 'play none none none'
+          }
+        });
+      }
+    })();
 
     /* --------------------------------------------------------
        2g. CONTACT — Calm resolution
-       Animation slows down. Content fades in gently.
-       No 3D transforms—flat, quiet, confident.
        -------------------------------------------------------- */
     document.querySelectorAll('#contact .panel-3d').forEach((el, i) => {
       gsap.from(el, {
         opacity: 0,
         y: 30,
-        duration: 1.2, /* Slower = calmer */
+        duration: 1.2,
         delay: i * 0.15,
         scrollTrigger: {
           trigger: '#contact',
@@ -696,12 +741,9 @@
 
     sections.forEach(section => {
       let offsetTop = section.offsetTop;
-      /* If GSAP pinned this section, it is wrapped in a pin-spacer. 
-         We must use the spacer's offsetTop instead. */
       if (section.parentElement && section.parentElement.classList.contains('pin-spacer')) {
         offsetTop = section.parentElement.offsetTop;
       }
-
       if (scrollY >= offsetTop) {
         currentSection = section.getAttribute('id');
       }
@@ -768,13 +810,11 @@
       const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
-        /* Determine the real target element (handle GSAP pin-spacer) */
         let targetEl = target;
         if (target.parentElement && target.parentElement.classList.contains('pin-spacer')) {
           targetEl = target.parentElement;
         }
 
-        /* Use GSAP ScrollToPlugin which automatically handles elements */
         if (typeof gsap !== 'undefined' && gsap.plugins.ScrollToPlugin) {
           gsap.to(window, {
             duration: 1,
@@ -782,7 +822,6 @@
             ease: 'power3.inOut'
           });
         } else {
-          /* Fallback if plugin fails to load */
           const offsetTop = targetEl.offsetTop - 44;
           window.scrollTo({ top: offsetTop, behavior: 'smooth' });
         }

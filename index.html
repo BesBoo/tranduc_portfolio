@@ -65,7 +65,7 @@
       <div class="hero__intro" id="hero-intro">
         <span class="hero__intro-greeting">Hello, I'm</span>
         <h1 class="hero__intro-name" id="hero-name-intro">Tran Duy Duc</h1>
-
+        <p class="hero__intro-welcome" id="hero-intro-welcome">Welcome to my Portfolio Website</p>
       </div>
 
       <!-- Phase 2+3: Final hero layout — text left, avatar card right -->
@@ -449,37 +449,194 @@
          ACT 6 — SKILLS: Layered depth planes
          Camera moves forward through skill layers on scroll.
          ============================================================ -->
-    <section class="tile tile--parchment" id="skills">
-      <div class="tile__inner">
-        <span class="section-label panel-3d">Skills</span>
-        <h2 class="display-lg section-heading panel-3d">Technical Skills</h2>
+    <section class="ts-section" id="skills">
 
-        <div class="skills-grid">
-          <div class="skill-category panel-3d">
-            <h3 class="tagline skill-category__title">Programming Languages</h3>
-            <p class="skill-category__items">Python, HTML/CSS/JavaScript, C#</p>
+      <!-- ── Header ── -->
+      <div class="ts-header">
+        <h2 class="ts-title" aria-label="Tools and Stack">
+          <span class="ts-word" id="ts-w1">TOOLS</span>
+          <span class="ts-amp" id="ts-w2">&amp;</span>
+          <span class="ts-word" id="ts-w3">STACK</span>
+        </h2>
+        <div class="ts-divider" id="ts-divider"></div>
+      </div>
+
+      <!-- ── Grid ── -->
+      <div class="ts-grid" id="ts-grid">
+
+        <!-- Row 1 -->
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#e34f26">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="13"
+                fill="currentColor">5</text>
+            </svg>
           </div>
-          <div class="skill-category panel-3d">
-            <h3 class="tagline skill-category__title">AI & Machine Learning</h3>
-            <p class="skill-category__items">TensorFlow, Keras, NumPy, pandas, scikit-learn, OpenCV, MediaPipe</p>
-          </div>
-          <div class="skill-category panel-3d">
-            <h3 class="tagline skill-category__title">Data & Databases</h3>
-            <p class="skill-category__items">MySQL, PostgreSQL, SQL Server, File Processing Automation (Excel/CSV),
-              Power BI</p>
-          </div>
-          <div class="skill-category panel-3d">
-            <h3 class="tagline skill-category__title">Software & Web Development</h3>
-            <p class="skill-category__items">Git, GitHub, VS Code, Figma, PyQt5 (GUI), Responsive Design, Clean
-              Architecture</p>
-          </div>
-          <div class="skill-category panel-3d">
-            <h3 class="tagline skill-category__title">Soft Skills</h3>
-            <p class="skill-category__items">Self-learning, Logical Thinking, Problem Solving, Responsibility, Teamwork,
-              Attention to Detail</p>
+          <div class="ts-info">
+            <span class="ts-name">HTML</span>
+            <span class="ts-desc">Standard Markup Language</span>
           </div>
         </div>
-      </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#3776ab">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="11"
+                fill="currentColor">Py</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">Python</span>
+            <span class="ts-desc">General Purpose Language</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#ff6f00">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10"
+                fill="currentColor">TF</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">TensorFlow / Keras</span>
+            <span class="ts-desc">ML Framework</span>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#264de4">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="13"
+                fill="currentColor">3</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">CSS</span>
+            <span class="ts-desc">Style Sheet Language</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#5c3ee8">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9"
+                fill="currentColor">OCV</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">OpenCV / MediaPipe</span>
+            <span class="ts-desc">Computer Vision Library</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#00758f">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9"
+                fill="currentColor">SQL</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">MySQL / PostgreSQL</span>
+            <span class="ts-desc">Relational Database</span>
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#f7df1e">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="10"
+                fill="currentColor">JS</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">JavaScript</span>
+            <span class="ts-desc">Web Scripting Language</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#9b59b6">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="11"
+                fill="currentColor">C#</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">C#</span>
+            <span class="ts-desc">.NET Framework Language</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#f05032">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9"
+                fill="currentColor">GIT</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">Git / GitHub</span>
+            <span class="ts-desc">Version Control Platform</span>
+          </div>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#3ddc84">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9"
+                fill="currentColor">AND</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">Android / Kotlin</span>
+            <span class="ts-desc">Mobile Development</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#a259ff">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9"
+                fill="currentColor">FIG</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">Figma</span>
+            <span class="ts-desc">UI / UX Design Tool</span>
+          </div>
+        </div>
+
+        <div class="ts-card" data-ts-card>
+          <div class="ts-icon" style="--ic:#f2c811">
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1.5" y="1.5" width="25" height="25" rx="5" stroke="currentColor" stroke-width="1.6" />
+              <text x="14" y="18" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9"
+                fill="currentColor">PBI</text>
+            </svg>
+          </div>
+          <div class="ts-info">
+            <span class="ts-name">Power BI</span>
+            <span class="ts-desc">Data Visualization</span>
+          </div>
+        </div>
+
+      </div><!-- /ts-grid -->
     </section>
 
     <!-- ============================================================
