@@ -426,36 +426,70 @@
     });
 
     /* --------------------------------------------------------
-       2c. ABOUT — Step-by-step 3D panel reveal
-       Content rises from depth and fades in.
+       2c. ABOUT — Pinned stacked cards animation
+       Section pins when it reaches viewport top.
+       Cards 2–4 slide up from below and stack on card 1.
+       Page stays pinned until all cards have stacked.
+       Scroll up → cards reverse, un-stack one by one.
        -------------------------------------------------------- */
-    document.querySelectorAll('#about .panel-3d').forEach((el, i) => {
-      gsap.from(el, {
-        opacity: 0,
-        y: 50,
-        duration: 0.8,
-        delay: i * 0.1,
+    (function initAboutStackAnimation() {
+      var aboutSection = document.querySelector('.about-stack');
+      var cards = gsap.utils.toArray('.about-card');
+      if (!aboutSection || cards.length < 2) return;
+
+      /* Cards 2–4 start hidden below card 1 */
+      gsap.set(cards.slice(1), {
+        yPercent: 110,
+        opacity: 0
+      });
+
+      /* Total number of card transitions */
+      var numTransitions = cards.length - 1; /* 3 transitions for 4 cards */
+
+      /* Build a timeline that stacks cards one by one */
+      var stackTL = gsap.timeline({
         scrollTrigger: {
-          trigger: el,
+          trigger: aboutSection,
+          start: 'top top',
+          /* Shorter pin distance — less scroll per card */
+          end: '+=' + (numTransitions * window.innerHeight * 0.35),
+          pin: true,
+          scrub: 1.2,             /* Higher = smoother, more lag for buttery feel */
+          anticipatePin: 1,
+          pinSpacing: true,
+          /* Snap to card boundaries: 1 scroll = 1 card */
+          snap: {
+            snapTo: 1 / numTransitions,  /* Snap at 0, 0.33, 0.67, 1 */
+            duration: { min: 0.4, max: 0.8 }, /* Snap animation duration */
+            ease: 'power3.inOut'
+          }
+        }
+      });
+
+      /* Animate each card sliding up with longer duration + smooth easing */
+      cards.forEach(function (card, i) {
+        if (i === 0) return;
+
+        stackTL.to(card, {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power3.inOut'   /* Smoother ease curve */
+        });
+      });
+
+      /* Header entrance (happens once when section first scrolls into view) */
+      gsap.from('.about-stack__header', {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        scrollTrigger: {
+          trigger: '.about-stack__header',
           start: 'top 85%',
           toggleActions: 'play none none none'
         }
       });
-    });
-
-    document.querySelectorAll('#about .journey-step').forEach(step => {
-      gsap.from(step, {
-        opacity: 0,
-        y: 60,
-        rotateX: prefersReducedMotion ? 0 : 3, /* Subtle 3D tilt */
-        duration: 0.9,
-        scrollTrigger: {
-          trigger: step,
-          start: 'top 80%',
-          toggleActions: 'play none none none'
-        }
-      });
-    });
+    })();
 
     /* --------------------------------------------------------
        2d. EXPERIENCE — Timeline-style reveal
@@ -661,7 +695,14 @@
     let currentSection = '';
 
     sections.forEach(section => {
-      if (scrollY >= section.offsetTop) {
+      let offsetTop = section.offsetTop;
+      /* If GSAP pinned this section, it is wrapped in a pin-spacer. 
+         We must use the spacer's offsetTop instead. */
+      if (section.parentElement && section.parentElement.classList.contains('pin-spacer')) {
+        offsetTop = section.parentElement.offsetTop;
+      }
+
+      if (scrollY >= offsetTop) {
         currentSection = section.getAttribute('id');
       }
     });
@@ -727,8 +768,24 @@
       const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
-        const offsetTop = target.offsetTop - 44; /* Account for nav height */
-        window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        /* Determine the real target element (handle GSAP pin-spacer) */
+        let targetEl = target;
+        if (target.parentElement && target.parentElement.classList.contains('pin-spacer')) {
+          targetEl = target.parentElement;
+        }
+
+        /* Use GSAP ScrollToPlugin which automatically handles elements */
+        if (typeof gsap !== 'undefined' && gsap.plugins.ScrollToPlugin) {
+          gsap.to(window, {
+            duration: 1,
+            scrollTo: { y: targetEl, offsetY: 44 },
+            ease: 'power3.inOut'
+          });
+        } else {
+          /* Fallback if plugin fails to load */
+          const offsetTop = targetEl.offsetTop - 44;
+          window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        }
       }
     });
   });

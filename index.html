@@ -12,6 +12,9 @@
 
 <body>
 
+  <!-- Purple gradient wave background — full page -->
+  <div class="hero__bg-waves"></div>
+
   <!-- Scroll Progress -->
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
@@ -57,8 +60,6 @@
          After 6s: Interactive 3D tilt on avatar card
          ============================================================ -->
     <section class="hero tile--black" id="hero">
-      <!-- Purple gradient wave background -->
-      <div class="hero__bg-waves"></div>
 
       <!-- Phase 1: Intro Splash — fullscreen centered text -->
       <div class="hero__intro" id="hero-intro">
@@ -107,47 +108,70 @@
       </div>
     </section>
 
+
+
     <!-- ============================================================
-         ACT 2 — HIGHLIGHTS: Counter animation on scroll
+         ACT 3 — ABOUT: Stacked Cards Scroll Animation
+         Cards stack on top of each other as user scrolls.
+         Scroll up reverses smoothly.
          ============================================================ -->
-    <section class="tile tile--parchment" id="highlights">
-      <div class="tile__inner">
-        <div class="highlights">
-          <div class="highlight-item panel-3d">
-            <div class="highlight-item__value"><span data-count="3.82">0</span></div>
-            <p class="caption highlight-item__label">GPA — Most Recent Semester</p>
-          </div>
-          <div class="highlight-item panel-3d">
-            <div class="highlight-item__value"><span data-count="5">0</span></div>
-            <p class="caption highlight-item__label">Personal Projects</p>
-          </div>
-          <div class="highlight-item panel-3d">
-            <div class="highlight-item__value"><span data-count="10" data-suffix="+">0</span></div>
-            <p class="caption highlight-item__label">Technologies & Tools</p>
+    <section class="about-stack" id="about">
+      <div class="about-stack__header">
+        <span class="section-label">About</span>
+        <h2 class="display-lg section-heading">My Foundation</h2>
+      </div>
+      <div class="about-stack__cards">
+        <!-- Card 1: Career Objective — intro card, dark + large text -->
+        <div class="about-card about-card--1">
+          <span class="about-card__number">01</span>
+          <h3 class="about-card__title">Career Objective</h3>
+          <p class="about-card__body">Computer Science student with a strong and diverse foundation, aiming to grow in
+            Artificial Intelligence, Data Analytics, and Full-stack Web Development. I seek opportunities to apply
+            programming, machine learning, and UI/UX thinking to real-world systems that automate processes and support
+            decision-making.</p>
+        </div>
+        <!-- Card 2: Education -->
+        <div class="about-card about-card--2">
+          <span class="about-card__number">02</span>
+          <h3 class="about-card__title">Education</h3>
+          <div class="about-card__body">
+            <p class="about-card__school">Ho Chi Minh City Open University</p>
+            <p class="about-card__degree">Bachelor of Computer Science (2022 – Present)</p>
+            <p class="about-card__gpa">Recent GPA: <strong>3.82 / 4.0</strong></p>
+            <p class="about-card__coursework-label">Highlighted Coursework:</p>
+            <div class="about-card__tags">
+              <span>Artificial Intelligence</span>
+              <span>Computer Vision</span>
+              <span>Data Mining</span>
+              <span>Databases</span>
+              <span>Data Structures &amp; Algorithms</span>
+              <span>Web Programming</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         ACT 3 — ABOUT / JOURNEY: Step-by-step scroll reveal
-         Content reveals as 3D floating panels.
-         ============================================================ -->
-    <section class="tile tile--light" id="about">
-      <div class="tile__inner reading-layout">
-        <span class="section-label panel-3d">About</span>
-        <h2 class="display-lg section-heading panel-3d">Education & Background</h2>
-
-        <div class="content-block journey-step">
-          <h3 class="tagline" style="margin-bottom:var(--spacing-sm)">Ho Chi Minh City Open University</h3>
-          <p class="caption" style="color:var(--color-ink-muted-48);margin-bottom:var(--spacing-md)">Computer Science ·
-            2022 – Present</p>
-          <p>Most Recent Semester GPA: <strong>3.82 / 4.0</strong></p>
-          <p style="margin-top:var(--spacing-md)"><span class="caption-strong">Relevant Coursework:</span><br>
-            <span class="caption" style="color:var(--color-ink-muted-80)">Artificial Intelligence, Computer Vision, Data
-              Mining, Database Systems, Data Structures and Algorithms, Object-Oriented Programming, Web Programming,
-              Discrete Mathematics.</span>
-          </p>
+        <!-- Card 3: Work Experience — "build on top" -->
+        <div class="about-card about-card--3">
+          <span class="about-card__number">03</span>
+          <h3 class="about-card__title">Work Experience</h3>
+          <div class="about-card__body">
+            <p class="about-card__role">Web Developer Intern</p>
+            <p class="about-card__company">Southern Star Development &amp; Investment Consulting JSC</p>
+            <ul class="about-card__list">
+              <li>Developed and refined website UI for F&B and Spa clients</li>
+              <li>Converted Figma designs into pixel-perfect HTML/CSS</li>
+              <li>Implemented responsive layouts across devices</li>
+              <li>Collaborated closely with designers and backend developers</li>
+              <li>Improved products based on real client feedback</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Card 4: Professional Direction — closing card, top of final stack -->
+        <div class="about-card about-card--4">
+          <span class="about-card__number">04</span>
+          <h3 class="about-card__title">Professional Direction</h3>
+          <p class="about-card__body">Long-term goal: becoming a versatile AI Engineer, Data Analyst, or Software
+            Engineer capable of building intelligent systems, optimizing user experiences, and delivering practical
+            value in healthcare, education, and automation.</p>
         </div>
       </div>
     </section>
@@ -511,6 +535,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
   <script src="main.js"></script>
 </body>
 
